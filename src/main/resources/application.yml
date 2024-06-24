@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: Employee Management
+  datasource:
+    url: jdbc:postgresql://localhost:5432/employee_management
+    username: postgres
+    password: aash@1234
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  mail:
+    host: "smtp.gmail.com"
+    port: 587
+    username: "aashmohamed24@gmail.com"
+    password: "zurqgbenwppeskuw"
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+        ssl:
+          trust: "*"
+jwt:
+  secret: 1o4RbVqRTa+lEWCx9ZKPNProd7NINpEPB46grgr2mW8=
+  accessTokenLife: 500
+  refreshTokenLife: 30
+  issuer: www.aashmhd.com
