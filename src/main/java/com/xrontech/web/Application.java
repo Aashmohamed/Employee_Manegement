@@ -7,6 +7,11 @@ import com.xrontech.web.domain.job.JobRoleRepository;
 import com.xrontech.web.domain.security.entity.User;
 import com.xrontech.web.domain.security.entity.UserRole;
 import com.xrontech.web.domain.security.repos.UserRepository;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.SpringApplication;
@@ -15,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @RequiredArgsConstructor
 @SpringBootApplication
+@OpenAPIDefinition(info = @Info(title = "Employees API", version = "2.0", description = "Employees Information"))
+@SecurityScheme(name = "ems", scheme = "bearer", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER)
 public class Application {
 
 	private final UserRepository userRepository;

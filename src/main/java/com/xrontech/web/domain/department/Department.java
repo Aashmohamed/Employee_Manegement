@@ -7,13 +7,11 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-@Builder
 @Entity
-@Table(name = "\"Department\"")
+@Builder
 public class Department {
-
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "id", nullable = false, updatable = false)
     @SequenceGenerator(
             name = "primary_sequence",
             sequenceName = "primary_sequence",
@@ -25,6 +23,8 @@ public class Department {
             generator = "primary_sequence"
     )
     private Long id;
+
     @Column(name = "name", nullable = false)
     private String name;
+
 }

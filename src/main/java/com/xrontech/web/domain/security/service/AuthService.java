@@ -48,27 +48,8 @@ public class AuthService {
         }
     }
 
-    public static String getCurrentUser() {
-        try {
-            SecurityContext securityContext = SecurityContextHolder.getContext();
-            if (securityContext != null && securityContext.getAuthentication() != null) {
-                Object principal = securityContext.getAuthentication().getPrincipal();
-                if (principal instanceof UserData userData) {
-                    return userData.getUsername();
-                } else {
-                    throw new ApplicationCustomException(HttpStatus.UNAUTHORIZED, "INVALID_PRINCIPAL", "Invalid Principal");
-                }
-            } else {
-                throw new ApplicationCustomException(HttpStatus.UNAUTHORIZED, "SECURITY_CONTEXT_IS_NULL", "Security Context is Null");
-            }
-        } catch (Exception e) {
-            throw new ApplicationCustomException(HttpStatus.UNAUTHORIZED, "INVALID_USER", e.getMessage());
-        }
-    }
-
     public ApplicationResponseDTO resetPassword(ResetPasswordDTO resetPasswordDTO) {
-        String username = AuthService.getCurrentUser();
-        User user = userService.findByUsername(username);
+        User user = userService.getCurrentUser();
         if (!passwordEncoder.matches(resetPasswordDTO.getOldPassword(), user.getPassword())) {
             throw new ApplicationCustomException(HttpStatus.BAD_REQUEST, "INVALID_OLD_PASSWORD", "Invalid Old Password");
         } else if (!(resetPasswordDTO.getNewPassword().equals(resetPasswordDTO.getConfirmPassword()))) {
@@ -103,6 +84,7 @@ public class AuthService {
         return new ApplicationResponseDTO(HttpStatus.OK,"FORGOT_PASSWORD_LINK_SENT","Forgot Password Link Sent!");
 
     }
+
 
     public ApplicationResponseDTO resetForgotPassword(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ApplicationCustomException(HttpStatus.BAD_REQUEST, "USER_NOT_FOUND", "User not Found"));

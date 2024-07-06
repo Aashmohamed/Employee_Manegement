@@ -1,17 +1,17 @@
-package com.xrontech.web.domain.job;
+package com.xrontech.web.domain.document;
 
-import com.xrontech.web.domain.department.Department;
+import com.xrontech.web.domain.model.BaseEntity;
+import com.xrontech.web.domain.security.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Getter
 @Setter
 @Entity
-@Table(name = "job")
-public class JobRole {
+@Builder
+public class Document extends BaseEntity {
     @Id
     @Column(name = "id", nullable = false, updatable = false)
     @SequenceGenerator(
@@ -29,14 +29,18 @@ public class JobRole {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "salary")
-    private Double salary;
+    @Column(name = "type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private DocumentType type;
 
-    @Column(name = "department_id")
-    private Long departmentId;
+    @Column(name = "url",columnDefinition = "TEXT")
+    private String url;
 
     @ManyToOne
-    @JoinColumn(name = "department_id",referencedColumnName = "id",insertable = false,updatable = false)
-    private Department department;
+    @JoinColumn(name = "employee_id",referencedColumnName = "id",insertable = false,updatable = false)
+    private User employee;
+
+    @Column(name = "employee_id")
+    private Long employeeId;
 
 }

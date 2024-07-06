@@ -14,6 +14,7 @@ import java.util.List;
 public class JobRoleService {
     private final JobRoleRepository jobRoleRepository;
     private final DepartmentRepository departmentRepository;
+
     public ApplicationResponseDTO createJobRole(JobRoleDTO jobRoleDTO) {
         if (jobRoleRepository.findByTitleAndDepartmentId(jobRoleDTO.getTitle(),jobRoleDTO.getDepartmentId()).isPresent()){
             throw new ApplicationCustomException(HttpStatus.BAD_REQUEST, "JOB_ROLE_ALREADY_EXIST", "Job role already exist");

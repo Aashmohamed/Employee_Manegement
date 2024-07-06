@@ -2,55 +2,51 @@ package com.xrontech.web.domain.department;
 
 import com.xrontech.web.dto.ApplicationResponseDTO;
 import com.xrontech.web.exception.ApplicationCustomException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class DepartmentService {
-
     private final DepartmentRepository departmentRepository;
-
-    public DepartmentService(DepartmentRepository departmentRepository) {
-        this.departmentRepository = departmentRepository;
-    }
-
     public ApplicationResponseDTO createDepartment(DepartmentDTO departmentDTO) {
-        if(departmentRepository.findByName(departmentDTO.getName()).isPresent()){
-            throw  new ApplicationCustomException(HttpStatus.BAD_REQUEST,"DEPARTMENT_NAME_EXIST","Department Name Already Exit");
+        if (departmentRepository.findByName(departmentDTO.getName()).isPresent()){
+            throw new ApplicationCustomException(HttpStatus.BAD_REQUEST, "DEPARTMENT_ALREADY_EXIST", "Department already exist");
         }
-        departmentRepository.save(Department.builder()
-                .name(departmentDTO.getName())
-                .build());
-        return new ApplicationResponseDTO(HttpStatus.CREATED, "NEW_DEPARTMENT_CREATED_SUCCESSFULLY", "New Department Created Successfully!");
+
+        departmentRepository.save(Department.builder().name(departmentDTO.getName()).build());
+        return new ApplicationResponseDTO(HttpStatus.CREATED, "NEW_DEPARTMENT_CREATED_SUCCESSFULLY", "New department created successfully");
     }
 
-    public List<Department> getDepartments() {
-        return  departmentRepository.findAllByNameNot("Admin");
+    public List<Department> getAllDepartments() {
+        return departmentRepository.findAllByNameNot("Admin");
     }
 
-    public Department getDepartment(Long id) {
-        return  departmentRepository.findById(id).orElseThrow(()-> new ApplicationCustomException(HttpStatus.NOT_FOUND,"INVALID_DEPARTMENT","Invalid Department"));
+    public Department getDepartmentById(Long id) {
+        return departmentRepository.findById(id).orElseThrow(()-> new ApplicationCustomException(HttpStatus.NOT_FOUND, "INVALID_DEPARTMENT_ID", "Invalid department id"));
     }
 
-    public Department getDepartment(String name) {
-        return  departmentRepository.findByName(name).orElseThrow(()-> new ApplicationCustomException(HttpStatus.NOT_FOUND,"INVALID_DEPARTMENT","Invalid Department"));
+    public Department getDepartmentByName(String name) {
+        return departmentRepository.findByName(name).orElseThrow(()-> new ApplicationCustomException(HttpStatus.NOT_FOUND, "INVALID_DEPARTMENT_NAME", "Invalid department name"));
     }
 
-    public ApplicationResponseDTO updateDepartment(Long id, DepartmentDTO departmentDTO) {
+    public ApplicationResponseDTO updateDepartment(Long id,DepartmentDTO departmentDTO) {
+        Department department = departmentRepository.findById(id).orElseThrow(() ->
+            new ApplicationCustomException(HttpStatus.BAD_REQUEST, "INVALID_DEPARTMENT_ID", "Invalid department id")
+        );
 
-        Department department = departmentRepository.findById(id).orElseThrow(()-> new ApplicationCustomException(HttpStatus.NOT_FOUND,"INVALID_DEPARTMENT", "Invalid Department"));
-
-        departmentRepository.findByName(departmentDTO.getName()).ifPresent(existingUser -> {
+        departmentRepository.findByName(departmentDTO.getName()).ifPresent(existingDepartment -> {
             if (!department.getName().equals(departmentDTO.getName())) {
-                throw new ApplicationCustomException(HttpStatus.BAD_REQUEST, "MOBILE_ALREADY_EXISTS", "Mobile Already Exists");
+                throw new ApplicationCustomException(HttpStatus.BAD_REQUEST, "DEPARTMENT_ALREADY_EXISTS", "Department already exists");
             }
         });
 
         department.setName(departmentDTO.getName());
-        departmentRepository.save(department);
-        return new ApplicationResponseDTO(HttpStatus.CREATED, "New_DEPARTMENT_UPDATE_DEPARTMENT", "New Department Updated Successfully!");
-    }
 
+        departmentRepository.save(department);
+        return new ApplicationResponseDTO(HttpStatus.CREATED, "DEPARTMENT_UPDATED_SUCCESSFULLY", "Department updated successfully");
+    }
 }
